@@ -4,7 +4,7 @@ import { Dies } from "../Constants.mjs";
 export default class Superhero extends character {
     constructor (name, INT, STR, DUR, SPE, POW, COM, HP){
         super(name, INT, STR, DUR, SPE, POW, COM, HP);
-        this.contrary; //ataca enemigo o no
+        this.contrary = true; //ataca enemigo o no
     }
 
     static create(name, INT, STR, DUR, SPE, POW, COM){
@@ -16,20 +16,27 @@ export default class Superhero extends character {
     }
 
     attack (result, diesContainer) {
+        let damage;
 
-        if (result >=1 || result <= 2) {
+        if (result >=1 && result <= 2) {
             this.contrary = false;
-            this.miss(result, diesContainer);        
+            damage= this.miss(result, diesContainer);
+            console.log("daño infligido: "+ damage);
+            return damage;        
         }
 
-        if (result >= 3 || result <= 17) {
+        if (result >= 3 && result <= 17) {
             this.contrary = true;
-            this.normal(result);
+            damage = this.normal(result);
+            console.log("daño infligido: "+ damage);
+            return damage;
         }
 
-        if (result >=18 || result<=20 ) {
+        if (result >=18 && result<=20 ) {
             this.contrary = true;
-            this.critic(result , diesContainer);
+            damage = this.critic(result , diesContainer);
+            console.log("daño infligido: "+ damage);
+            return damage;
         }
 
     }
@@ -37,29 +44,31 @@ export default class Superhero extends character {
     miss (result, diesContainer){
         let miss;
         if (result === 1) {
-            miss = this.SPE / (diesContainer[Dies.DIE3].roll(1))
+            miss = Math.ceil(this.SPE / (diesContainer[Dies.DIE3].roll(1)));
+            return miss;
         }
         if (result === 2) {
-            miss = this.SPE / (diesContainer[Dies.DIE3].roll(4))
+            miss = Math.ceil(this.SPE / (diesContainer[Dies.DIE3].roll(4)));
+            return miss;
         }
-       return miss; 
     }
 
     normal(result) {
         let normalDamage = Math.ceil((this.POW + this.STR) * result / 100);
+        return normalDamage;
     }
 
     critic(result, diesContainer) {
         let critic;
         switch (result) {
             case 18:
-                critic = ((this.INT * this.DUR) / 100) * (diesContainer[Dies.DIE3].roll(1));
+                critic = Math.ceil((this.INT * this.DUR) / 100) * (diesContainer[Dies.DIE3].roll(1));
                 break;
             case 19:
-                critic = ((this.INT * this.DUR) / 100) * (diesContainer[Dies.DIE3].roll(2));
+                critic = Math.ceil((this.INT * this.DUR) / 100) * (diesContainer[Dies.DIE3].roll(2));
                 break;
             case 20:
-                critic = ((this.INT * this.DUR) / 100) * (diesContainer[Dies.DIE5].roll(3));
+                critic = Math.ceil((this.INT * this.DUR) / 100) * (diesContainer[Dies.DIE5].roll(3));
                 break;     
         }
         let totalDamage = this.normal(result) + critic;

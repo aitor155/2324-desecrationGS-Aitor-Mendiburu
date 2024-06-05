@@ -32,7 +32,7 @@ export default class DiesContainer {
 
     createD20(){
         let values = [];
-        for (let i = 0; i <=20; ++i){
+        for (let i = 1; i <=20; ++i){
             values.push(i);
         }
         return new Die (values);
